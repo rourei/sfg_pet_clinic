@@ -2,13 +2,7 @@ package guru.springframework.sfgpetclinic.services;
 
 import guru.springframework.sfgpetclinic.model.Pet;
 
-import java.util.Set;
+// The specified Type and ID type are mapped to the generics in the CrudService.
+public interface PetService extends CrudService<Pet, Long> {
 
-public interface PetService {
-
-    Pet findById(Long id);
-
-    Pet save(Pet pet);
-
-    Set<Pet> findAll();
 }
