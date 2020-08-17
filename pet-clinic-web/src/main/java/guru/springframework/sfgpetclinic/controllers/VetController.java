@@ -14,7 +14,7 @@ public class VetController {
         this.vetService = vetService;
     }
 
-    @RequestMapping({"/vets", "/vets/index", "/vets/index.html"}) // when these URLs are requested, the method is called
+    @RequestMapping({"/vets", "/vets/index", "/vets/index.html", "/vets.html"}) // when these URLs are requested, the method is called
     public String listVets(Model model){
 
         // Add all available vets to the 'vets' property of the model

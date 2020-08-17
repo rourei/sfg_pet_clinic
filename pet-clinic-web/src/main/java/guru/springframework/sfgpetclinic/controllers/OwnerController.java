@@ -23,4 +23,9 @@ public class OwnerController {
 
         return "owners/index"; // make Thymeleaf look for a template in 'templates/owners' called '/index'
     }
+
+    @RequestMapping("/find") // Placeholder to fix broken links until functionality is added
+    public String findOwners(){
+        return "notimplemented"; // make Thymeleaf look for a template called 'notimplemented'
+    }
 }

@@ -10,4 +10,9 @@ public class IndexController {
     public String index(){
         return "index"; // make Thymeleaf look for a template called 'index'
     }
+
+    @RequestMapping("/oups") // Placeholder for simulating ru,time error later on
+    public String oupsHandler(){
+        return "notimplemented"; // make Thymeleaf look for a template called 'notimplemented'
+    }
 }
