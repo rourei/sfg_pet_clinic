@@ -9,7 +9,7 @@ import java.util.Set;
 // Implements the PetService interface by using the methods of the abstract parent class.
 
 @Service
-public class PetServiceMap extends AbstractMapService<Pet, Long> implements PetService {
+public class PetMapService extends AbstractMapService<Pet, Long> implements PetService {
 
     @Override
     public Set<Pet> findAll() {

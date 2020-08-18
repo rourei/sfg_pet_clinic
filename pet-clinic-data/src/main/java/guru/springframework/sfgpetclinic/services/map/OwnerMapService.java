@@ -12,13 +12,13 @@ import java.util.Set;
 // Implements the OwnerService interface by using the methods of the abstract parent class.
 
 @Service
-public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements OwnerService {
+public class OwnerMapService extends AbstractMapService<Owner, Long> implements OwnerService {
 
     private final PetTypeService petTypeService;
     private final PetService petService;
 
     // Using Spring's Dependency Injection
-    public OwnerServiceMap(PetTypeService petTypeService, PetService petService) {
+    public OwnerMapService(PetTypeService petTypeService, PetService petService) {
         this.petTypeService = petTypeService;
         this.petService = petService;
     }
