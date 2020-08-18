@@ -26,7 +26,7 @@ public class PetTypeSDJpaService implements PetTypeService {
         // Initialize return value as empty set to avoid NPE at runtime
         Set<PetType> petTypes = new HashSet<>();
 
-        // Iterate over all available pet types and add each owner to the return value using a method reference
+        // Iterate over all available pet types and add each pet type to the return value using a method reference
         petTypeRepository.findAll().forEach(petTypes::add);
 
         return petTypes;
