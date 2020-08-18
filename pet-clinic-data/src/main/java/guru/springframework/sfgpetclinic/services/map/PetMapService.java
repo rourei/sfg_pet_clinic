@@ -2,6 +2,7 @@ package guru.springframework.sfgpetclinic.services.map;
 
 import guru.springframework.sfgpetclinic.model.Pet;
 import guru.springframework.sfgpetclinic.services.PetService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 // Implements the PetService interface by using the methods of the abstract parent class.
 
 @Service
+@Profile({"default", "map"}) // as soon as an active profile is specified in the config, default will not be loaded -> add map
 public class PetMapService extends AbstractMapService<Pet, Long> implements PetService {
 
     @Override
