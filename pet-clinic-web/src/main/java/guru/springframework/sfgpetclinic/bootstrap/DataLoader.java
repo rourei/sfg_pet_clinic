@@ -1,10 +1,7 @@
 package guru.springframework.sfgpetclinic.bootstrap;
 
 import guru.springframework.sfgpetclinic.model.*;
-import guru.springframework.sfgpetclinic.services.OwnerService;
-import guru.springframework.sfgpetclinic.services.PetTypeService;
-import guru.springframework.sfgpetclinic.services.SpecialtyService;
-import guru.springframework.sfgpetclinic.services.VetService;
+import guru.springframework.sfgpetclinic.services.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +15,16 @@ public class DataLoader implements CommandLineRunner {
     private final VetService vetService;
     private final PetTypeService petTypeService;
     private final SpecialtyService specialtyService;
+    private final VisitService visitService;
 
     // now using Spring's Dependency Injection, no @Autowired necessary for constructor injection
-    public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService, SpecialtyService specialtyService) {
+    public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService,
+                      SpecialtyService specialtyService, VisitService visitService) {
         this.ownerService = ownerService;
         this.vetService = vetService;
         this.petTypeService = petTypeService;
         this.specialtyService = specialtyService;
+        this.visitService = visitService;
     }
 
     @Override
@@ -98,9 +98,19 @@ public class DataLoader implements CommandLineRunner {
         hannahsPet.setBirthDate(LocalDate.now());
         owner2.getPets().add(hannahsPet); // Add pet to set (method chaining -> immediately modify return value)
 
+        // Creating the visit --here-- throws an RTE since the owner (Hannah) has not been persisted (save below)
         ownerService.save(owner2);
 
-        System.out.println("Loaded owners...");
+        // ###### CREATE NEW VISIT ENTITY ######
+        Visit catVisit = new Visit();
+        catVisit.setPet(hannahsPet);
+        catVisit.setDate(LocalDate.now());
+        catVisit.setDescription("General CheckUp.");
+
+        // Saving the visit after saving the owner is safe since the owner and the pet now have an ID assigned
+        visitService.save(catVisit);
+
+        System.out.println("Loaded owners and visits...");
 
         // ###### CREATE VETS ######
         Vet vet1 = new Vet();
