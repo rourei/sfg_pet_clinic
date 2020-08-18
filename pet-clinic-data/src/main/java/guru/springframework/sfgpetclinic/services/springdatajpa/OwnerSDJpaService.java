@@ -21,6 +21,7 @@ public class OwnerSDJpaService implements OwnerService {
     private final PetRepository petRepository; // Might be necessary later on
     private final PetTypeRepository petTypeRepository; // Might be necessary later on
 
+    // Uses Springs Dependency Injection
     public OwnerSDJpaService(OwnerRepository ownerRepository, PetRepository petRepository,
                              PetTypeRepository petTypeRepository) {
         this.ownerRepository = ownerRepository;

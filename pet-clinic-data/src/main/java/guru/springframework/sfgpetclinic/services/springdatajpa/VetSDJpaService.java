@@ -16,6 +16,7 @@ public class VetSDJpaService implements VetService {
 
     private final VetRepository vetRepository;
 
+    // Uses Springs Dependency Injection
     public VetSDJpaService(VetRepository vetRepository) {
         this.vetRepository = vetRepository;
     }
@@ -26,7 +27,7 @@ public class VetSDJpaService implements VetService {
         // Initialize return value as empty set to avoid NPE at runtime
         Set<Vet> vets = new HashSet<>();
 
-        // Iterate over all available owners and add each owner to the return value using a method reference
+        // Iterate over all available vets and add each vet to the return value using a method reference
         vetRepository.findAll().forEach(vets::add);
 
         return vets;
