@@ -1,3 +1,5 @@
+[![rourei](https://circleci.com/gh/rourei/spring-pet-clinic.svg?style=svg)](https://app.circleci.com/pipelines/github/rourei/sfg_pet_clinic)
+
 # sfg_pet_clinic
 
 The SFG Pet Clinic application. [WIP]
