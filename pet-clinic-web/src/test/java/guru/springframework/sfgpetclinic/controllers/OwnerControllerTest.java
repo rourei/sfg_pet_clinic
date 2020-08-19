@@ -5,6 +5,8 @@ import guru.springframework.sfgpetclinic.services.OwnerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,13 +47,14 @@ class OwnerControllerTest {
                 .build();
     }
 
-    @Test
-    void listOwners() throws Exception {
+    @ParameterizedTest // Enable parameter usage for this test -> multiple configurations for the same test
+    @ValueSource(strings = {"/owners", "/owners/index", "/owners/index.html"}) // Define parameters
+    void listOwners(String urlPath) throws Exception {
 
         // Set up the Mock interaction
         when(ownerService.findAll()).thenReturn(owners);
 
-        mockMvc.perform(get("/owners"))
+        mockMvc.perform(get(urlPath))
                 .andExpect(status().is2xxSuccessful()) // or .is.Ok() or .is(200)
                 .andExpect(view().name("owners/index"))
                 .andExpect(model().attribute("owners", hasSize(2)));
@@ -64,21 +67,6 @@ class OwnerControllerTest {
          added to the model with the name 'owners' and the size of 2 (since 2 Owners are added in setUp())
         */
     }
-
-    @Test
-    void listOwnersByIndex() throws Exception {
-
-        // Same as listOwners() but using a different path. Could also be implemented for 'owners/index.html'
-
-        // Set up the Mock interaction
-        when(ownerService.findAll()).thenReturn(owners);
-
-        mockMvc.perform(get("/owners/index")) // <-- using a different path here
-                .andExpect(status().is(200))
-                .andExpect(view().name("owners/index"))
-                .andExpect(model().attribute("owners", hasSize(2)));
-    }
-
 
     // This test will be updated as soon as the findOwners() method is actually implemented.
     @Test
