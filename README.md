@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/rourei/spring_pet_clinic.svg?style=svg)](https://app.circleci.com/pipelines/github/rourei/sfg_pet_clinic)
+[![CircleCI](https://circleci.com/gh/rourei/sfg_pet_clinic.svg?style=svg)](https://app.circleci.com/pipelines/github/rourei/sfg_pet_clinic)
 
 # sfg_pet_clinic
 
