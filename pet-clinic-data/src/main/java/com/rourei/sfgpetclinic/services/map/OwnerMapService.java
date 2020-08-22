@@ -8,6 +8,7 @@ import com.rourei.sfgpetclinic.services.PetTypeService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 // Implements the OwnerService interface by using the methods of the abstract parent class.
@@ -96,5 +97,12 @@ public class OwnerMapService extends AbstractMapService<Owner, Long> implements 
          matching last name. From this filtered stream, the first one is returned, which is an Optional.
          From the Optional either the found Owner is returned or null if no matching Owner exists.
         */
+    }
+
+    @Override
+    public List<Owner> findAllByLastNameLike(String lastName) {
+
+        // todo - implementation
+        return null;
     }
 }

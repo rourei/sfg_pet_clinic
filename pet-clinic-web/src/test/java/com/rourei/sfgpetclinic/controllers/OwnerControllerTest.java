@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,37 +47,65 @@ class OwnerControllerTest {
                 .standaloneSetup(controller) // very lightweight, does not bring up a server, no Context necessary
                 .build();
     }
+      // ###### DEPRECATED ###### -> corresponding controller function is no longer available
+//    @ParameterizedTest // Enable parameter usage for this test -> multiple configurations for the same test
+//    @ValueSource(strings = {"/owners", "/owners/index", "/owners/index.html"}) // Define parameters
+//    void listOwners(String urlPath) throws Exception {
+//
+//        // Set up the Mock interaction
+//        when(ownerService.findAll()).thenReturn(owners);
+//
+//        mockMvc.perform(get(urlPath))
+//                .andExpect(status().is2xxSuccessful()) // or .is.Ok() or .is(200)
+//                .andExpect(view().name("owners/index"))
+//                .andExpect(model().attribute("owners", hasSize(2)));
+//
+//        /*
+//         The above code performs an HTTP GET request and defines certain expectations for the received response.
+//         Matchers are used to define the individual expectations. If one of the expectations is not met, the test fails.
+//
+//         The expectations include: a successful request (Code 200), a returned view name (owners/index) and an attribute
+//         added to the model with the name 'owners' and the size of 2 (since 2 Owners are added in setUp())
+//        */
+//    }
 
-    @ParameterizedTest // Enable parameter usage for this test -> multiple configurations for the same test
-    @ValueSource(strings = {"/owners", "/owners/index", "/owners/index.html"}) // Define parameters
-    void listOwners(String urlPath) throws Exception {
-
-        // Set up the Mock interaction
-        when(ownerService.findAll()).thenReturn(owners);
-
-        mockMvc.perform(get(urlPath))
-                .andExpect(status().is2xxSuccessful()) // or .is.Ok() or .is(200)
-                .andExpect(view().name("owners/index"))
-                .andExpect(model().attribute("owners", hasSize(2)));
-
-        /*
-         The above code performs an HTTP GET request and defines certain expectations for the received response.
-         Matchers are used to define the individual expectations. If one of the expectations is not met, the test fails.
-
-         The expectations include: a successful request (Code 200), a returned view name (owners/index) and an attribute
-         added to the model with the name 'owners' and the size of 2 (since 2 Owners are added in setUp())
-        */
-    }
-
-    // This test will be updated as soon as the findOwners() method is actually implemented.
     @Test
     void findOwners() throws Exception {
+
         mockMvc.perform(get("/owners/find"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("notimplemented"));
+                .andExpect(view().name("owners/findOwners"))
+                .andExpect(model().attributeExists("owner"));
 
         // Ensure that the controller does not call any unwanted methods
         verifyNoInteractions(ownerService);
+    }
+
+    @Test // when the find form returns multiple candidates
+    void processFindFormReturnMany() throws Exception {
+
+        // Set up the Mock interaction -> return multiple Owners
+        when(ownerService.findAllByLastNameLike(anyString()))
+                .thenReturn(Arrays.asList(Owner.builder().id(1L).build(),
+                Owner.builder().id(2L).build()));
+
+        // Expect a list view with two Owners (since two Owners added in the Mock interaction above)
+        mockMvc.perform(get("/owners"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/ownersList"))
+                .andExpect(model().attribute("selections", hasSize(2))); // terminology from the Thymeleaf template, 'owners' would be better
+    }
+
+    @Test // when the find form returns only only one result
+    void processFindFormReturnOne() throws Exception {
+
+        // Set up the Mock interaction -> return only one Owner
+        when(ownerService.findAllByLastNameLike(anyString())).thenReturn(Arrays.asList(Owner.builder().id(1L).build()));
+
+        // Expect a redirect to the owner that has been found
+        mockMvc.perform(get("/owners"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/owners/1"));
     }
 
     @Test
