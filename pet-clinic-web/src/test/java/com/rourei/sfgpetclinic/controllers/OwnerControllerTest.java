@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,5 +77,26 @@ class OwnerControllerTest {
 
         // Ensure that the controller does not call any unwanted methods
         verifyNoInteractions(ownerService);
+    }
+
+    @Test
+    void displayOwner() throws Exception{
+
+        // Set up the Mock interaction
+        when(ownerService.findById(anyLong())).thenReturn(Owner.builder().id(1L).build());
+
+        mockMvc.perform(get("/owners/123"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/ownerDetails"))
+                .andExpect(model().attribute("owner", hasProperty("id", is(1L))));
+
+        /*
+         The above code performs an HTTP GET request and defines certain expectations for the received response.
+         Matchers are used to define the individual expectations. If one of the expectations is not met, the test fails.
+
+         The expectations include: a successful request, a returned view name (owners/ownerDetails) and an attribute
+         added to the model with the name 'owners' which is expected to have an ID value of 1, since this has been
+         defined by the mock behaviour.
+        */
     }
 }

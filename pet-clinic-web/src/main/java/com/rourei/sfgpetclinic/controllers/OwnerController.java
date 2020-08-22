@@ -3,7 +3,10 @@ package com.rourei.sfgpetclinic.controllers;
 import com.rourei.sfgpetclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("/owners") // prefixing all following RequestMappings
 @Controller
@@ -27,5 +30,16 @@ public class OwnerController {
     @RequestMapping("/find") // Placeholder to fix broken links until functionality is added
     public String findOwners(){
         return "notimplemented"; // make Thymeleaf look for a template called 'notimplemented'
+    }
+
+    @GetMapping("/{ownerId}") // uses a path variable (relative to /owners !)
+    public ModelAndView showOwner(@PathVariable("ownerId") Long ownerId){ // piping the path variable into the method
+
+        // Using a combined model and view type
+        ModelAndView mav = new ModelAndView("owners/ownerDetails");
+        // Look for the requested owner (path variable!) and add it to the model
+        mav.addObject(ownerService.findById(ownerId));
+
+        return mav;
     }
 }
