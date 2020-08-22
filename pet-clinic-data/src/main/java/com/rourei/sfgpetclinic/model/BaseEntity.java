@@ -21,4 +21,9 @@ public class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // retrieve ID from database, ties to specific database (MySQL here)
     private Long id; // Hibernate recommends box types over primitives (Long instead of long)
+
+    // Necessary for the official Spring Pet Clinic Template for adding / editing owners
+    public boolean isNew() {
+        return this.id == null;
+    }
 }
