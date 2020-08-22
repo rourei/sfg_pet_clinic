@@ -3,7 +3,9 @@ package com.rourei.sfgpetclinic.controllers;
 import com.rourei.sfgpetclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,6 +18,16 @@ public class OwnerController {
 
     public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
+    }
+
+    // Handles the binding of form posts to Java objects
+    @InitBinder // allows injection of a WebDataBinder
+    public void setAllowedFields(WebDataBinder dataBinder){
+        /*
+         This is basically a security feature: by disallowing the ID field, the ID property cannot be changed from the
+         web interface. This is important since it is the primary property for the underlying database.
+        */
+        dataBinder.setDisallowedFields("id");
     }
 
     @RequestMapping({"", "/", "/index", "/index.html"}) // when these URLs are requested, the method is called (prefix!)
