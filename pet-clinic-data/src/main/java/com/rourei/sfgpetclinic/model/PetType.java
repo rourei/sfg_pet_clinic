@@ -24,4 +24,10 @@ public class PetType extends BaseEntity {
 
     @Column(name = "name")
     private String name;
+
+    // toString() necessary to properly display the pet type in the Web UI
+    @Override
+    public String toString() {
+        return name;
+    }
 }
