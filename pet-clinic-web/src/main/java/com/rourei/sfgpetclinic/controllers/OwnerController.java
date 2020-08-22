@@ -61,7 +61,8 @@ public class OwnerController {
         }
 
         // Find owners by last name and treat result according to number of results (none, 1, many)
-        List<Owner> results = ownerService.findAllByLastNameLike(owner.getLastName());
+        List<Owner> results = ownerService.findAllByLastNameLike("%" + owner.getLastName() + "%");
+        // % is the SQL wild card character -> needs to be appended / prefixed
 
         if (results.isEmpty()) {
             result.rejectValue("lastName", "notFound", "not found");
