@@ -1,17 +1,19 @@
 package com.rourei.sfgpetclinic.controllers;
 
 import com.rourei.sfgpetclinic.model.Owner;
+import com.rourei.sfgpetclinic.model.Pet;
 import com.rourei.sfgpetclinic.model.PetType;
 import com.rourei.sfgpetclinic.services.OwnerService;
 import com.rourei.sfgpetclinic.services.PetService;
 import com.rourei.sfgpetclinic.services.PetTypeService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @Controller
@@ -47,5 +49,71 @@ public class PetController {
          web interface. This is important since it is the primary property for the underlying database.
         */
         dataBinder.setDisallowedFields("id");
+    }
+
+    @GetMapping("/pets/new")
+    public String initCreationPetForm(Owner owner, Model model) {
+        // Create empty pet object and add it to the model -> empty form on creating new  pet
+        Pet pet = Pet.builder().build();
+        owner.getPets().add(pet);
+        pet.setOwner(owner);
+        model.addAttribute("pet", pet);
+
+        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+    }
+
+    @PostMapping("/pets/new")
+    public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
+
+        // Check if pet already exists with the current owner -> reject addition if so
+        if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null){
+            result.rejectValue("name", "duplicate", "already exists");
+        }
+
+        // Add new pet to the current Owner
+        owner.getPets().add(pet);
+
+        // Put content back into the form by adding the current pet state to the model and return the pre-filled form
+        if (result.hasErrors()) {
+
+            model.addAttribute("pet", pet);
+
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
+        } else {
+
+            // Save the added pet and redirect to owner details
+            petService.save(pet);
+
+            return "redirect:/owners/" + owner.getId();
+        }
+    }
+
+    @GetMapping("/pets/{petId}/edit")
+    public String initUpdatePetForm(@PathVariable Long petId, Model model) {
+
+        // Add the pet that should be edited to the model -> fill the view component with the current content
+        model.addAttribute("pet", petService.findById(petId));
+
+        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+    }
+
+    @PostMapping("/pets/{petId}/edit")
+    public String processUpdateForm(@Valid  Pet pet, BindingResult result, Owner owner, Model model) {
+
+        // Assign Owner and return the form wth the current content of the Pet object
+        if (result.hasErrors()) {
+            pet.setOwner(owner);
+            model.addAttribute("pet", pet);
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
+        } else {
+
+            // Add pet and save it to the database
+            owner.getPets().add(pet);
+            petService.save(pet);
+
+            return "redirect:/owners/" + owner.getId();
+        }
     }
 }
