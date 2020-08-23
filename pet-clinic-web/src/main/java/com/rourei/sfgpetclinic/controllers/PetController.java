@@ -55,6 +55,7 @@ public class PetController {
     public String initCreationPetForm(Owner owner, Model model) {
         // Create empty pet object and add it to the model -> empty form on creating new  pet
         Pet pet = Pet.builder().build();
+        // Create bi-directional connection to allow the pet's Owner name be displayed on the form
         owner.getPets().add(pet);
         pet.setOwner(owner);
         model.addAttribute("pet", pet);
